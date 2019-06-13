@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute  vec4 vPosition;
+attribute vec2 vTexPoints;
+varying vec2 fTexPoints;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+void main() {
+    gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+    fTexPoints = vTexPoints; }
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform sampler2D Tex0;
+uniform sampler2D Tex1;
+uniform float texturing;
+varying vec2 fTexPoints;
+
+void main() {
+    if (texturing == 0.0) { // No texturing
+        gl_FragColor = vec4(0.647059, 0.164706, 0.164706, 1.0); }
+        
+    else if (texturing == 1.0) { // Checkerboard with decreasing intensity on the sides of the horse
+        vec4 textureColor0 = texture2D(Tex0, fTexPoints);
+        vec4 textureColor1 = texture2D(Tex1, fTexPoints);
+        gl_FragColor = vec4(0.647059, 0.164706, 0.164706, 1.0);
+        gl_FragColor = gl_FragColor*textureColor0*textureColor1; } 
+        
+    else if (texturing == 2.0) { // Dark checkerboard on the back of the horse
+        vec4 textureColor0 = texture2D(Tex0, fTexPoints);
+        gl_FragColor = vec4(0.04, 0.04, 0.04, 1.0);
+        gl_FragColor = gl_FragColor*textureColor0; }
+        
+    else if (texturing == 3.0) { // Checkerboard on the front of the horse
+        vec4 textureColor0 = texture2D(Tex0, fTexPoints);
+        gl_FragColor = vec4(0.647059, 0.164706, 0.164706, 1.0);
+        gl_FragColor = gl_FragColor*textureColor0; } }
+</script>
+
+
+
+<script type="text/javascript" src="./Common/webgl-utils.js"></script>
+<script type="text/javascript" src="./Common/initShaders.js"></script>
+<script type="text/javascript" src="./Common/MV.js"></script>
+<script type="text/javascript" src="Homework2.js"></script>
+
+<canvas id="gl-canvas" width="512"" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+
+<div style="width:512px;" align="center">
+<button id="play">Play animation</button><br>
+A simple animation of a horse jumping over obstacles on its path.
+</div>
+
+<div style="width:512px;" align="center">
+Roteate the scene: <input id="slider0" type="range" min="-180" max="180" step="10" value="0"/>
+</div>
+
+
+<body>
+
+</body>
+</html>
